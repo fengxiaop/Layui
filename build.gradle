@@ -36,4 +36,7 @@ dependencies {
     implementation 'org.freemarker:freemarker:2.3.30'
     //mysql链接
     implementation 'mysql:mysql-connector-java'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'commons-io:commons-io:2.5'
+    implementation 'com.alibaba:fastjson:1.2.73'
 }
