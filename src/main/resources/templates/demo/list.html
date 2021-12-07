@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分类管理</title>
+    <link rel="stylesheet" href="/css/elementui/index.css">
+    <script src="/js/vue.js"></script>
+    <script src="/js/elementui/index.js"></script>
+    <script src="/js/axios.min.js?v=001"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/layui/layui.all.js"></script>
+    <script src="/js/jquery-1.4.4.min.js"></script>
+</head>
+<body>
+<div id='app'>
+    <template>
+        <el-container v-loading.fullscreen.lock="loading">
+            <el-header class="toolsbarHeader" style="background-color:#fafafa">
+                <el-container>
+                    <el-form :inline="true" size="medium">
+                        <el-input placeholder="请输入名称" @change="handlerPageNo" v-model="searchForm.name" style="width: 160px"
+                                  size="medium"></el-input>
+                        <el-input placeholder="请输入编码" @change="handlerPageNo" v-model="searchForm.code" style="width: 160px"
+                                  size="medium"></el-input>
+                        <el-button type="primary" size="medium" icon="el-icon-search" @click="flushPage">查询
+                        </el-button>
+                        <el-button type="primary" size="medium" icon="el-icon-circle-plus-outline"
+                                   @click="addTab">新增
+                        </el-button>
+                        <el-button type="info" size="medium" icon="el-icon-refresh-right" @click="resetSearch">
+                            重置
+                        </el-button>
+                    </el-form>
+                </el-container>
+            </el-header>
+            <el-container>
+                <el-container>
+                    <el-container>
+                        <el-main>
+                            <el-table border
+                                      :row-style="{height:'32px'}"
+                                      :header-row-style="{height:'32px'}"
+                                      :cell-style="{padding:'1px'}"
+                                      :header-cell-style="{color:'#333',fontSize: '14px',border:true}"
+                                      style="width: 100%"
+                                      stripe
+                                      :data="pageForm.dataList"
+                                      :height="controlForm.tableHeight"
+                                      id="out-table">
+                                <el-table-column
+                                        fixed
+                                        align="center"
+                                        prop="name"
+                                        label="分类名称">
+                                </el-table-column>
+                                <el-table-column
+                                        fixed
+                                        align="center"
+                                        prop="code"
+                                        label="分类编码">
+                                </el-table-column>
+                                <el-table-column
+                                        align="center"
+                                        prop="createTime"
+                                        label="创建时间">
+                                    <template slot-scope="scope">
+                                        <span>{{ scope.row.createTime | FormatDate('yyyy-MM-dd HH:mm:ss') }}</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        align="center"
+                                        prop="updateTime"
+                                        label="修改时间">
+                                    <template slot-scope="scope">
+                                        <span>{{ scope.row.updateTime | FormatDate('yyyy-MM-dd HH:mm:ss') }}</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        align="center"
+                                        fixed="right"
+                                        label="操作"
+                                        width="150">
+                                    <template slot-scope="scope">
+                                        <el-button type="primary" size="small" @click="updateTab(scope.row)">编辑
+                                        </el-button>
+                                        <el-button type="primary" size="small" @click="deleteCategory(scope.row)">删除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-main>
+                        <el-footer>
+                            <el-pagination @size-change="handleSizeChange"
+                                           @current-change="handleCurrentChange"
+                                           :current-page="pageForm.currentPage"
+                                           :page-sizes="pageForm.pageSizes"
+                                           :page-size="pageForm.pageSize"
+                                           layout="total, sizes, prev, pager, next, jumper"
+                                           :total="pageForm.totalCount">
+                            </el-pagination>
+                        </el-footer>
+                    </el-container>
+                </el-container>
+            </el-container>
+        </el-container>
+    </template>
+</div>
+
+</body>
+<style>
+    .d1 {
+        position: fixed;
+        top: 100px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+</style>
+<script>
+    var app = new Vue({
+        el: '#app',
+        name: "index",
+        data() {
+            return {
+                loading: false,
+                searchForm: {
+                    name: '',
+                    code: ''
+                },
+                pageForm: {
+                    dataList: [],
+                    currentPage: 1,
+                    totalCount: 0,
+                    pageSizes: [10, 20, 50],
+                    pageSize: 10,
+                },
+                controlForm: {
+                    tableHeight: 0
+                },
+            }
+        },
+        created: function () {
+            this.flushPage();
+        },
+        methods: {
+            handlerPageNo(){
+                this.pageForm.currentPage = 1;
+                this.pageForm.pageSize = 10;
+            },
+            handleSizeChange(val) {
+                this.pageForm.pageSize = val;
+                this.flushPage();
+            },
+            handleCurrentChange(val) {
+                this.pageForm.currentPage = val
+                this.flushPage();
+            },
+            resetSearch() {
+                this.searchForm.name = "";
+                this.searchForm.code = "";
+                this.flushPage();
+            },
+            flushPage() {
+                var self = this;
+                let param = $.param(this.searchForm);
+                loading(self);
+                var requestUrl = "/api/pc/category/selectPage" + "?" + param + "&page=" + this.pageForm.currentPage + "&pageSize=" + this.pageForm.pageSize;
+                axios.get(reqHost + requestUrl).then(res => {
+                    var data = res.data;
+                    if (data.code != '200') {
+                        fail("数据加载失败！请联系管理员解决", self);
+                    }
+                    self.pageForm.dataList = data.dataList;
+                    self.pageForm.totalCount = data.maxCount;
+                    self.pageForm.currentPage = data.currentPage;
+                    self.pageForm.pageSize = data.pageSize;
+                    unloading(self);
+                }).catch(err => {
+                    unloading(self);
+                    fail("数据加载失败！请联系管理员解决", self);
+                });
+            },
+            addTab() {
+                open("/forward?page=/category/add", "40%", "40%", "新增分类");
+            },
+            updateTab(row) {
+                open("/forward?page=/category/update&id="+row.id, "40%", "40%", "修改分类");
+            },
+            viewTab(row) {
+                open("/forward?page=/category/view&id="+row.id, "40%", "40%", "查看分类");
+            },
+            deleteCategory(row) {
+                this.$confirm('此操作会将当前数据和已经关联的商品及防伪码数据进行删除, 请你确定是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteInfo(row);
+                }).catch(() => {
+
+                });
+            },
+            deleteInfo(row) {
+                var self = this;
+                axios.get(reqHost+"/api/pc/category/delete?id="+row.id)
+                    .then(res=>{
+                        if (isEmpty(res.data)) {
+                            fail("数据操作异常!", self);
+                            return false;
+                        }
+                        var data = res.data;
+                        if (data.code == 200) {
+                            success("删除成功!", self);
+                            self.flushPage();
+                        }else{
+                            fail(data.desc, self);
+                            return false;
+                        }
+                    }).catch(e=>{
+                    fail("操作异常!", self);
+                })
+            }
+        },
+        mounted() {
+            this.$nextTick(() => {
+                this.controlForm.tableHeight = window.innerHeight - 150;
+            })
+        },
+    });
+</script>
+</html>

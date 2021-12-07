@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>广告管理</title>
+    <link rel="stylesheet" href="/css/elementui/index.css">
+    <link rel="stylesheet" href="/css/page.css">
+    <script src="/js/vue.js"></script>
+    <script src="/js/elementui/index.js"></script>
+    <script src="/js/axios.min.js?v=001"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/jquery-1.4.4.min.js"></script>
+</head>
+<body>
+<div id='app'>
+    <template>
+        <el-form v-loading.fullscreen.lock="loading" size="small" label-width="80px">
+            <div class="loading-el">
+                <el-form-item label="分类名称" :required="true"
+                              maxlength="20"
+                              show-word-limit>
+                    <el-input v-model="dataForm.name" style="width: 80%"></el-input>
+                </el-form-item>
+                <el-form-item label="分类编码" :required="true"
+                              maxlength="20"
+                              show-word-limit>
+                    <el-input v-model="dataForm.code" style="width: 80%"></el-input>
+                </el-form-item>
+            </div>
+            <el-form-item>
+                <el-button @click="cancel">取消</el-button>
+            </el-form-item>
+        </el-form>
+    </template>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        name: "index",
+        data() {
+            return {
+                dataForm: {
+                    name: '',
+                    code: ''
+                },
+                loading: false
+            }
+        },
+        created: function () {
+            this.info();
+        },
+        methods: {
+            cancel() {
+                closeAndFlushTable();
+            },
+            info() {
+                var self = this;
+                axios.get(reqHost+"/api/pc/category/selectById?id="+getUrlParam("id"))
+                    .then(res=>{
+                        if (isEmpty(res.data)) {
+                            fail("数据获取异常!", self);
+                            return false;
+                        }
+                        var data = res.data;
+                        if (data.code == 200) {
+                            self.dataForm.code = data.data.code;
+                            self.dataForm.name = data.data.name;
+                        }else{
+                            fail("数据获取异常!", self);
+                            return false;
+                        }
+                    }).catch(e=>{
+                    fail("操作异常!", self);
+                })
+            },
+        }
+    });
+</script>
+</html>
