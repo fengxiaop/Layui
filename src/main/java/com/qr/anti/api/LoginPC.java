@@ -10,11 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.UUID;
 
-/**
- * @Author：胡侯东
- * @Date：2021/3/1 5:51 下午
- * @Desc:
- */
+
 @RestController
 @RequestMapping(value = "/api/pc/login")
 public class LoginPC  {

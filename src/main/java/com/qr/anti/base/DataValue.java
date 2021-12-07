@@ -1,13 +1,5 @@
 package com.qr.anti.base;
 
-/**
- * @Author：胡侯东
- * @Date：2021/3/1 5:52 下午
- * @Desc:
- */
-
-
-
 public class DataValue<T> extends ReturnValue {
     private static final long serialVersionUID = -4183409003088415431L;
 

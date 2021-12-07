@@ -9,11 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-/**
- * @Author：胡侯东
- * @Date：2021/3/1 5:42 下午
- * @Desc:
- */
 @Service
 public class UserService implements IUserService {
 

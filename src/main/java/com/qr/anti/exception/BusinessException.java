@@ -1,10 +1,5 @@
 package com.qr.anti.exception;
 
-/**
- * @Author：胡侯东
- * @Date：2021/3/1 5:48 下午
- * @Desc:
- */
 
 import java.text.MessageFormat;
 

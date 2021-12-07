@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
  * @author ******
  */
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserPo extends BaseValue {
 
     private static final long serialVersionUID = 1L;

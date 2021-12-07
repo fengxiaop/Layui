@@ -5,10 +5,6 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * @description t_user
- * @author ******
- */
 @Data
 public class UserVo extends BaseValue {
 

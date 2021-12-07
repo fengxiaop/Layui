@@ -1,11 +1,5 @@
 package com.qr.anti.base;
 
-/**
- * @Author：胡侯东
- * @Date：2021/3/1 4:31 下午
- * @Desc:
- */
-
 import java.util.List;
 
 public interface BaseRepository<T> {
