@@ -1,0 +1,18 @@
+.layui-form-label.layui-required:after{
+    content:"*";
+    color:red;
+    position: absolute;
+    top:12px;
+    left:15px;
+}
+
+.layui-form-label.layui-required-two:after{
+    content:"*";
+    color:red;
+    position: absolute;
+    top:12px;
+    left:40px;
+}
+
+
+

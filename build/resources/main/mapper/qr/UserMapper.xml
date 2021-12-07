@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qr.anti.dao.UserDAO">
+
+    <resultMap id="BaseResultMap" type="com.qr.anti.po.UserPo">
+        <result column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,
+                user_name,
+                password,
+                create_time,
+                update_time
+    </sql>
+
+    <!-- 查询条件 -->
+    <sql id="Where_Clause">
+        <where>
+
+        </where>
+    </sql>
+
+    <insert id="add" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.qr.anti.po.UserPo">
+        INSERT INTO t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != userName'>
+                user_name,
+            </if>
+            <if test ='null != password'>
+                password,
+            </if>
+            <if test ='null != createTime'>
+                create_time,
+            </if>
+            <if test ='null != updateTime'>
+                update_time
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != userName'>
+                #{userName},
+            </if>
+            <if test ='null != password'>
+                #{password},
+            </if>
+            <if test ='null != createTime'>
+                #{createTime},
+            </if>
+            <if test ='null != updateTime'>
+                #{updateTime}
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete" >
+        DELETE FROM t_user
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.qr.anti.po.UserPo">
+        UPDATE t_user
+        <set>
+            <if test ='null != userName'>user_name = #{userName},</if>
+            <if test ='null != password'>password = #{password},</if>
+            <if test ='null != createTime'>create_time = #{createTime},</if>
+            <if test ='null != updateTime'>update_time = #{updateTime}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="queryById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM t_user
+        WHERE id = #{id}
+    </select>
+
+    <select id="queryByPage" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        <include refid="Where_Clause" />
+        FROM t_user
+        <if test="pager.mysqlQueryCondition != null and pager.mysqlQueryCondition != ''" >
+            ${pager.mysqlQueryCondition}
+        </if>
+    </select>
+
+    <select id="queryByCount" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM t_user
+        <include refid="Where_Clause" />
+    </select>
+
+    <select id="login" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        <include refid="Where_Clause" />
+        FROM t_user
+        where user_name = #{userName} and password = #{password}
+    </select>
+
+</mapper>

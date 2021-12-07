@@ -1,0 +1,108 @@
+body {
+    background-color: #FFF;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.el-main {
+    padding: 10px;
+    padding-left: 30px;
+    border: #173854;
+    border-color: red;
+}
+
+.el-header {
+    background-color: #B3C0D1;
+    color: #333;
+    line-height: 60px;
+}
+
+.el-aside {
+    color: #333;
+}
+
+.th {
+    height: 40px;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: #f2f2f2;
+}
+
+.el-table--border th {
+    height: 40px;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: #f8f8f9;
+    text-align: center;
+}
+
+.el-table--border td {
+    height: 40px;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.el-table {
+    font-size: 13px;
+}
+
+.el-table td, .el-table th.is-leaf, .el-table--border, .el-table--group {
+    border-color: #e5e9f2;
+}
+
+.el-table--border::after, .el-table--group::after, .el-table::before {
+    background-color: #e5e9f2;
+}
+
+.el-header {
+    background-color: #fafafa;
+}
+
+.el-header {
+    background-color: #B3C0D1;
+    color: #B3C0D1;
+    line-height: 60px;
+}
+
+.el-search {
+    position: absolute;
+    right: 0px;
+    width: 80%;
+}
+
+.toolsbarRight {
+    margin: -10px;
+    float: right;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.toolsbarLeft {
+    font-size: 14px;
+    width: 200px;
+}
+
+.toolsbarHeader {
+    height: 60px;
+    background-color: #fafafa;
+}
+
+.el-input-number--mini {
+    width: 100px;
+}
+
+.loading-el {
+    opacity: 1;
+    z-index: 200;
+    pointer-events: none;
+}
+.preitem{
+    orverflow-x:hidden;orverflow-y:scroll;
+}
+body, div,el-menu {
+    color: #333333;
+}

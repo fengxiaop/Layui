@@ -1,0 +1,6 @@
+
+.loading-el {
+    opacity: 1;
+    z-index: 200;
+    pointer-events: none;
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <link rel="stylesheet" href="/css/elementui/index.css">
+    <script src="/js/vue.js"></script>
+    <script src="/js/elementui/index.js"></script>
+    <script src="/js/axios.min.js?v=001"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/jquery-1.4.4.min.js"></script>
+</head>
+<body style="height: 100%">
+<div id='app' class="app">
+    <el-form ref="loginForm" :model="form" :rules="rules" @keyup.enter.native="onSubmit" label-width="80px" class="login-box">
+        <div class="main" v-loading.fullscreen.lock="loading">
+            <h3 class="login-title">欢迎登录</h3>
+            <el-form-item label="账号" prop="userName">
+                <el-input type="text" placeholder="请输入账号" v-model="form.userName"/>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+                <el-input type="password" placeholder="请输入密码" v-model="form.password"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-on:click="onSubmit">立即登录</el-button>
+            </el-form-item>
+        </div>
+    </el-form>
+</div>
+</body>
+<style lang="scss" scoped>
+    body {
+        background: #f0f2f5 url("/image/background.svg") no-repeat 50%;
+    }
+    .app {
+
+    }
+    .main{
+        border-radius: 3px;
+    }
+    .login-box {
+        border: 1px solid #DCDFE6;
+        width: 350px;
+        background: #fff;
+        margin: 180px auto;
+        padding: 35px 35px 15px 35px;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+    }
+
+    .login-title {
+        text-align: center;
+        margin: 0 auto 40px auto;
+        color: #303133;
+    }
+</style>
+<script>
+    var app = new Vue({
+        el: '#app',
+        name: "index",
+        data() {
+            return {
+                loading:false,
+                form: {
+                    userName: '',
+                    password: ''
+                },
+                rules: {
+                    userName: [
+                        {required: true, message: '请输入账号!', trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true, message: '请输入密码!', trigger: 'blur'}
+                    ]
+                }
+            }
+        },
+        methods: {
+            onSubmit() {
+                var self = this;
+                this.$refs['loginForm'].validate((valid) => {
+                    if (self.form.userName.length <= 0) {
+                        fail("请输入账号!", self);
+                        return false;
+                    }
+                    if (self.form.password.length <= 0) {
+                        fail("请输入密码!", self);
+                        return false;
+                    }
+                    loading(self);
+                    axios.post(reqHost + "/api/pc/login/userLogin", self.form, {"Content-Type": "application/json"}).then((res) => {
+                        if (res.data.code == 200) {
+                            sessionStorage.setItem("token", res.data.data);
+                            success("登陆成功,正在进入主页......", self);
+                            setTimeout(function () {
+                                window.location.href = "/admin/main";
+                            }, 500);
+                        } else {
+                            fail(res.data.desc, self);
+                            unloading(self);
+                            return false;
+                        }
+                    }).catch(e=>{
+                        unloading(self);
+                        fail("登陆异常!", self);
+                    });
+                });
+            }
+        }
+    });
+</script>
+</html>
