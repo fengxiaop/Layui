@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>广告管理</title>
+    <link rel="stylesheet" href="/css/elementui/index.css">
+    <script src="/js/vue.js"></script>
+    <script src="/js/elementui/index.js"></script>
+    <script src="/js/axios.min.js?v=001"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/jquery-1.4.4.min.js"></script>
+</head>
+<body>
+<div id='app'>
+    <template>
+        <el-form v-loading.fullscreen.lock="loading" size="small" label-width="80px">
+            <el-form-item label="分类名称" :required="true"
+                          maxlength="20"
+                          show-word-limit>
+                <el-input v-model="dataForm.name" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="分类编码" :required="true"
+                          maxlength="20"
+                          show-word-limit>
+                <el-input v-model="dataForm.code"
+                          disabled="true"
+                           style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">保存</el-button>
+                <el-button @click="cancel">取消</el-button>
+            </el-form-item>
+        </el-form>
+    </template>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        name: "index",
+        data() {
+            return {
+                dataForm:{
+                    id: '',
+                    name:'',
+                    code:''
+                },
+                loading: false
+            }
+        },
+        created: function () {
+            this.info();
+        },
+        methods: {
+            cancel() {
+                closeAndFlushTable();
+            },
+            info() {
+                var self = this;
+                axios.get(reqHost+"/api/pc/category/selectById?id="+getUrlParam("id"))
+                .then(res=>{
+                    if (isEmpty(res.data)) {
+                        fail("数据获取异常!", self);
+                        return false;
+                    }
+                    var data = res.data;
+                    if (data.code == 200) {
+                        self.dataForm.id = data.data.id;
+                        self.dataForm.code = data.data.code;
+                        self.dataForm.name = data.data.name;
+                    }else{
+                        fail("数据获取异常!", self);
+                        return false;
+                    }
+                }).catch(e=>{
+                    fail("操作异常!", self);
+                })
+            },
+            validateForm(){
+                if (isEmpty(this.dataForm.name)) {
+                    fail("请输入名称!", this);
+                    return false;
+                }
+                return true;
+            },
+            onSubmit() {
+                if (this.validateForm()) {
+                    loading(this);
+                    var self = this;
+                    axios.post(reqHost + "/api/pc/category/update", self.dataForm, {"Content-Type": "application/json"}).then((res) => {
+                        if (res.data.code == 200) {
+                            success("修改成功!", self);
+                            unloading(self);
+                            closeAndFlushTable();
+                        } else {
+                            fail(res.data.desc, self);
+                            unloading(self);
+                            return false;
+                        }
+                    }).catch(e=>{
+                        unloading(self);
+                        fail("操作异常!", self);
+                    });
+                }
+            }
+        }
+    });
+</script>
+</html>

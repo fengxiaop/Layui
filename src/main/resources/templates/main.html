@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>首页</title>
     <link rel="stylesheet" href="/css/elementui/index.css">
-    <script src="/js/vue.js"></script>
+    <script src="/js/vue.js"><
+    /script>
     <script src="/js/elementui/index.js"></script>
     <script src="/js/axios.min.js?v=001"></script>
     <script src="/js/common.js"></script>
@@ -65,7 +66,7 @@
             logout(){
                 success("正在退出系统...", this);
                 setTimeout(function () {
-                    window.location.href = '/logout';
+                    window.location.href = 'http://localhost:9276/';
                 }, 1500);
             },
             handleSelect(key, keyPath) {
